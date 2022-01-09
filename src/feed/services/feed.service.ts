@@ -1,3 +1,4 @@
+import { User } from 'src/auth/models/user.interface';
 import { Feed } from './../models/feed.interface';
 import { Injectable } from '@nestjs/common';
 import { DeleteResult, Repository, UpdateResult } from 'typeorm';
@@ -12,8 +13,8 @@ export class FeedService {
     private readonly feedRepository: Repository<FeedEntity>,
   ) {}
 
-  createFeed(feed:Feed): Observable<Feed>{
-    return from(this.feedRepository.save(feed));
+  createFeed(user:User,feed:Feed): Observable<Feed>{
+    return from(this.feedRepository.save({...feed, author: user}));
   }
 
 
@@ -21,6 +22,11 @@ export class FeedService {
     return from(this.feedRepository.find());
   }
 
+  findBySort(take:number =10, skip:number=0){
+    return from(this.feedRepository.findAndCount({take,skip}).then(([feeds])=>{
+      return <Feed[]>feeds
+    }))
+  }
   updatedFeed(id:string, updateFeed:Feed): Observable<UpdateResult>{
       return from(this.feedRepository.update(id, updateFeed))
   }
