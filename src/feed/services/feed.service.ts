@@ -13,25 +13,30 @@ export class FeedService {
     private readonly feedRepository: Repository<FeedEntity>,
   ) {}
 
-  createFeed(user:User,feed:Feed): Observable<Feed>{
-    return from(this.feedRepository.save({...feed, author: user}));
+  createFeed(user: User, feed: Feed): Observable<Feed> {
+    return from(this.feedRepository.save({ ...feed, author: user }));
   }
 
-
-  findAllFeed(): Observable<Feed[]>{
+  findAllFeed(): Observable<Feed[]> {
     return from(this.feedRepository.find());
   }
 
-  findBySort(take:number =10, skip:number=0){
-    return from(this.feedRepository.findAndCount({take,skip}).then(([feeds])=>{
-      return <Feed[]>feeds
-    }))
+  findBySort(take: number = 10, skip: number = 0) {
+    return from(
+      this.feedRepository.findAndCount({ take, skip }).then(([feeds]) => {
+        return <Feed[]>feeds;
+      }),
+    );
   }
-  updatedFeed(id:string, updateFeed:Feed): Observable<UpdateResult>{
-      return from(this.feedRepository.update(id, updateFeed))
+  updatedFeed(id: string, updateFeed: Feed): Observable<UpdateResult> {
+    return from(this.feedRepository.update(id, updateFeed));
   }
 
-  deleteFeed(id:string): Observable<DeleteResult>{
+  deleteFeed(id: string): Observable<DeleteResult> {
     return from(this.feedRepository.delete(id));
+  }
+
+  findFeedById(id): Observable<Feed> {
+    return from(this.feedRepository.findOne(id, { relations: ['author'] }));
   }
 }

@@ -14,13 +14,14 @@ import { JwtModule } from '@nestjs/jwt';
       useFactory: () => ({
         secret: process.env.JWT_SECRET,
         signOptions: {
-          expiresIn: '3600s'
-        }
+          expiresIn: '3600s',
+        },
       }),
     }),
     TypeOrmModule.forFeature([UserEntity]),
   ],
-  providers: [AuthService, JwtGuard,JwtStrategy,RolesGuard],
+  providers: [AuthService, JwtGuard, JwtStrategy, RolesGuard],
   controllers: [AuthController],
+  exports: [AuthService],
 })
 export class AuthModule {}
